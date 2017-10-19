@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "es6", "dom"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "types": ["mocha", "node", "reflect-metadata"],
+    "outDir": "dist"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

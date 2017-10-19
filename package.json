@@ -13,10 +13,16 @@
   "author": "mschenatti",
   "license": "ISC",
   "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "@types/node-fetch": "^1.6.7",
     "binary": "^0.3.0",
     "funary": "^1.0.0",
     "install": "^0.10.1",
+    "mocha": "^3.4.2",
+    "node-fetch": "^1.7.1",
     "npm": "^5.5.1",
-    "socketcan": "^2.2.0"
+    "socketcan": "^2.2.0",
+    "@types/node": "^6.0.78",
+    "reflect-metadata": "^0.1.10"
   }
 }
