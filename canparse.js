@@ -1,37 +1,37 @@
+"use strict";
+
 var funary = require('funary');
 var binary = require('binary');
 
 const WORD_16_BIT = 16;
 const ARRAY_8_BIT_EMPTY = [0,0,0,0,0,0,0,0];
-const inputBufferMotorola = new Buffer([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xE8]);
-const inputBufferIntel = new Buffer([0xE8, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
 
 var enumEndianess = {
     "Intel": "Intel",
     "Motorola": "Motorola"
 }
 
-const instructionIntel = {
-    "issigned":     false,
-    "startbit":     0,
-    "bitlen":       64,
-    "endianess":    "Intel",
-    "resolution":   0.05,
-    "offsett":      5
-}
-
-const instructionMotorola = {
-    "issigned":     false,
-    "startbit":     0,
-    "bitlen":       64,
-    "endianess":    "Motorola",
-    "resolution":   0.05,
-    "offsett":      5
-}
+// const inputBufferMotorola = new Buffer([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xE8]);
+// const inputBufferIntel = new Buffer([0xE8, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+// const instructionIntel = {
+//     "issigned":     false,
+//     "startbit":     0,
+//     "bitlen":       64,
+//     "endianess":    "Intel",
+//     "resolution":   0.05,
+//     "offsett":      5
+// }
+// const instructionMotorola = {
+//     "issigned":     false,
+//     "startbit":     0,
+//     "bitlen":       64,
+//     "endianess":    "Motorola",
+//     "resolution":   0.05,
+//     "offsett":      5
+// }
 
 
 var myClass = class {
-
     constructor(buffer, instruction) {
         this.buffer = buffer;
         this.instruction = instruction;
@@ -91,11 +91,12 @@ var myClass = class {
 };
 
 
-var myObjIntel = new myClass(inputBufferIntel, instructionIntel);
-console.log(myObjIntel.getSignal())
+// var myObjIntel = new myClass(inputBufferIntel, instructionIntel);
+// console.log(myObjIntel.getSignal())
 
-var myObjMotorola = new myClass(inputBufferMotorola, instructionMotorola);
-console.log(myObjMotorola.getSignal())
+// var myObjMotorola = new myClass(inputBufferMotorola, instructionMotorola);
+// console.log(myObjMotorola.getSignal())
 
 
 
+exports.myClass = myClass;
