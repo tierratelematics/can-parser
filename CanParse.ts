@@ -3,12 +3,12 @@ import { enumEndianess, IInstruction } from "./ICanParse";
 const WORD_16_BIT = 16;
 
 export class CanParse {
-    public hex = new Array();
-    public dec = new Array();
-    public bitArray = new Array();
-    public bitString: string = "";
+    private hex = new Array();
+    private dec = new Array();
+    private bitArray = new Array();
+    private bitString: string = "";
 
-    retrieveNumberFromBuffer(buffer: Buffer, instruction: IInstruction): number {
+    public retrieveNumberFromBuffer(buffer: Buffer, instruction: IInstruction): number {
         this.hex = this.retrieveHex(buffer);
         this.dec = this.retrieveDec(this.hex);
         this.bitArray = this.retrieveBitArray(this.dec, instruction.endianess);
@@ -17,7 +17,7 @@ export class CanParse {
         return this.retrieveNumericValue(this.bitString, instruction.issigned, instruction.resolution, instruction.offset);
     }
 
-    retrieveHex(buffer: Buffer): Array<string> {
+    private retrieveHex(buffer: Buffer): Array<string> {
         let hexString = new Array();
         buffer.forEach(function (element) {
             hexString.push(element.toString(WORD_16_BIT));
@@ -25,7 +25,7 @@ export class CanParse {
         return hexString;
     }
 
-    retrieveDec(hexString: Array<string>): Array<string> {
+    private retrieveDec(hexString: Array<string>): Array<string> {
         let hexNumber = new Array();
         hexString.forEach(function (element) {
             hexNumber.push(parseInt(element, WORD_16_BIT))
@@ -33,7 +33,7 @@ export class CanParse {
         return hexNumber;
     }
 
-    retrieveBitArray(hexNumber: Array<string>, endianess: enumEndianess): Array<string> {
+    private retrieveBitArray(hexNumber: Array<string>, endianess: enumEndianess): Array<string> {
         let bitArray = new Array();
         hexNumber.forEach((element, index, arr) => {
             let array;
@@ -51,7 +51,7 @@ export class CanParse {
         return bitArray;
     }
 
-    retrieveBitString(bitArray: Array<string>, endianess: enumEndianess, bitlen: number, startbit: number): string {
+    private retrieveBitString(bitArray: Array<string>, endianess: enumEndianess, bitlen: number, startbit: number): string {
         let bitArrayMasked = new Array();
         if (endianess == enumEndianess.Intel) {
             for (var count = bitlen + startbit - 1; count != startbit - 1; count--) {
@@ -65,7 +65,7 @@ export class CanParse {
         return funary.arrayToString(bitArrayMasked);
     }
 
-    retrieveNumericValue(binaryString: string, issigned: boolean, resolution: number, offset: number): number {
+    private retrieveNumericValue(binaryString: string, issigned: boolean, resolution: number, offset: number): number {
         if (issigned === true) {
             if (binaryString.charAt(0) === "0") {
                 return parseInt(binaryString, 2) * resolution + offset;
@@ -77,7 +77,7 @@ export class CanParse {
         }
     }
 
-    retrieveStringNot(binaryString: string): string {
+    private retrieveStringNot(binaryString: string): string {
         let bitArrayMaskedNot = new Array();
         funary.stringToArray(binaryString).forEach(element => {
             bitArrayMaskedNot.push(funary.not(element))
