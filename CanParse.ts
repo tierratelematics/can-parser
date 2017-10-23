@@ -32,16 +32,30 @@ export class CanParse {
 
         //BIT ARRAY
         this.hexNumber.forEach((element, index, arr) => {
-            let array = funary.bitwise.or(funary.zeros(8), funary.little.toUnsignedBinary(element))
+            let array;
+            if(this.instruction.endianess === enumEndianess.Intel){
+                let row = funary.little.toUnsignedBinary(element);
+                array = funary.addzeros(row, 8 - row.length);
+            }else if(this.instruction.endianess === enumEndianess.Motorola){
+                let row = funary.big.toUnsignedBinary(element);
+                array = funary.unshiftzeros(row, 8 - row.length);
+            }
             array.forEach(element => {
                 this.bitArray = this.bitArray.concat(element);
             })
         })
 
         //Evaluate the bitArray based on startBit and bitlen
-        for (var count = this.instruction.bitlen + this.instruction.startbit - 1; count != this.instruction.startbit - 1; count--) {
-            this.bitArrayMasked.push(this.bitArray[count]);
+        if(this.instruction.endianess == enumEndianess.Intel){
+            for (var count = this.instruction.bitlen + this.instruction.startbit - 1; count != this.instruction.startbit - 1; count--) {
+                this.bitArrayMasked.push(this.bitArray[count]);
+            }
+        }else if(this.instruction.endianess == enumEndianess.Motorola){
+            for (var count = this.instruction.startbit - this.instruction.bitlen; count != this.instruction.startbit ; count++) {
+                this.bitArrayMasked.push(this.bitArray[count]);
+            }
         }
+        
         //Translate the bitArray into a string
         this.binaryString = funary.arrayToString(this.bitArrayMasked);
         //Generate the bitArray of the CA2 value
@@ -56,14 +70,11 @@ export class CanParse {
     getNumericValue() {
         if (this.instruction.issigned === true) {
             if (this.binaryString.charAt(0) === "0") {
-                console.log("Positive value")
                 return parseInt(this.binaryString, 2) * this.instruction.resolution + this.instruction.offset;
             } else if (this.binaryString.charAt(0) === "1") {
-                console.log("Negative value")
                 return - parseInt(this.binaryStringNot, 2) * this.instruction.resolution + this.instruction.offset;
             }
         } else {
-            console.log("Unsigned value")
             return parseInt(this.binaryString, 2) * this.instruction.resolution + this.instruction.offset;
         }
 
@@ -72,30 +83,27 @@ export class CanParse {
 
 
 //INTEL TEST
-const inputBufferIntel: Buffer = Buffer.from([0xDC, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00]);
-const instructionIntel: IInstruction = {
-    "issigned": true,
-    "startbit": 0,
-    "bitlen": 32,
-    "endianess": enumEndianess.Intel,
-    "resolution": 1,
-    "offset": 0
-}
-var myObjIntel = new CanParse(inputBufferIntel, instructionIntel);
-console.log(myObjIntel.getNumericValue());
+// const inputBufferIntel: Buffer = Buffer.from([0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6, 0x78, 0x9a]);
+// const instructionIntel: IInstruction = {
+//     "issigned": true,
+//     "startbit": 17,
+//     "bitlen": 47,
+//     "endianess": enumEndianess.Intel,
+//     "resolution": 1,
+//     "offset": 0
+// }
+// var myObjIntel = new CanParse(inputBufferIntel, instructionIntel);
+// console.log("INTEL:", JSON.stringify(myObjIntel.bitArrayMasked));
 
-// const inputBufferMotorola:Buffer = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x5B]);
-// const instructionMotorola:IInstruction = {
-//     "issigned": false,
-//     "startbit": 0,
-//     "bitlen": 12,
+// //MOTOROLA TEST
+// const inputBufferMotorola: Buffer = Buffer.from([0x9a, 0x78, 0xf6, 0xe5, 0xd4, 0xc3, 0xb2, 0xa1]);
+// const instructionMotorola: IInstruction = {
+//     "issigned": true,
+//     "startbit": 47,
+//     "bitlen": 47,
 //     "endianess": enumEndianess.Motorola,
-//     "resolution": 0.05,
-//     "offset": 5
+//     "resolution": 1,
+//     "offset": 0
 // }
 // var myObjMotorola = new CanParse(inputBufferMotorola, instructionMotorola);
-// console.log(myObjMotorola.getSignal())
-
-
-
-
+// console.log("MOTOROLA:", JSON.stringify(myObjMotorola.bitArrayMasked));
