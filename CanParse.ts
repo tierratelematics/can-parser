@@ -3,107 +3,86 @@ import { enumEndianess, IInstruction } from "./ICanParse";
 const WORD_16_BIT = 16;
 
 export class CanParse {
-    private buffer: Buffer;
-    private instruction: IInstruction;
-    public hexString = new Array();
-    public hexNumber = new Array();
-
+    public hex = new Array();
+    public dec = new Array();
     public bitArray = new Array();
+    public bitString: string = "";
 
-    public bitArrayMasked = new Array();
-    public binaryString: string = "";
+    retrieveNumberFromBuffer(buffer: Buffer, instruction: IInstruction): number {
+        this.hex = this.retrieveHex(buffer);
+        this.dec = this.retrieveDec(this.hex);
+        this.bitArray = this.retrieveBitArray(this.dec, instruction.endianess);
+        this.bitString = this.retrieveBitString(this.bitArray, instruction.endianess, instruction.bitlen, instruction.startbit);
 
-    public bitArrayMaskedNot = new Array();
-    public binaryStringNot: string = "";
+        return this.retrieveNumericValue(this.bitString, instruction.issigned, instruction.resolution, instruction.offset);
+    }
 
-    constructor(buffer: Buffer, instruction: IInstruction) {
-        this.buffer = buffer;
-        this.instruction = instruction;
+    retrieveHex(buffer: Buffer): Array<string> {
+        let hexString = new Array();
+        buffer.forEach(function (element) {
+            hexString.push(element.toString(WORD_16_BIT));
+        });
+        return hexString;
+    }
 
-        //HEX STRING
-        this.buffer.forEach(function (element) {
-            this.hexString.push(element.toString(WORD_16_BIT));
-        }, this);
+    retrieveDec(hexString: Array<string>): Array<string> {
+        let hexNumber = new Array();
+        hexString.forEach(function (element) {
+            hexNumber.push(parseInt(element, WORD_16_BIT))
+        });
+        return hexNumber;
+    }
 
-        //HEX NUMBER
-        this.hexString.forEach(function (element) {
-            this.hexNumber.push(parseInt(element, WORD_16_BIT))
-        }, this);
-
-        //BIT ARRAY
-        this.hexNumber.forEach((element, index, arr) => {
+    retrieveBitArray(hexNumber: Array<string>, endianess: enumEndianess): Array<string> {
+        let bitArray = new Array();
+        hexNumber.forEach((element, index, arr) => {
             let array;
-            if(this.instruction.endianess === enumEndianess.Intel){
+            if (endianess === enumEndianess.Intel) {
                 let row = funary.little.toUnsignedBinary(element);
                 array = funary.addzeros(row, 8 - row.length);
-            }else if(this.instruction.endianess === enumEndianess.Motorola){
+            } else if (endianess === enumEndianess.Motorola) {
                 let row = funary.big.toUnsignedBinary(element);
                 array = funary.unshiftzeros(row, 8 - row.length);
             }
             array.forEach(element => {
-                this.bitArray = this.bitArray.concat(element);
+                bitArray = bitArray.concat(element);
             })
         })
-
-        //Evaluate the bitArray based on startBit and bitlen
-        if(this.instruction.endianess == enumEndianess.Intel){
-            for (var count = this.instruction.bitlen + this.instruction.startbit - 1; count != this.instruction.startbit - 1; count--) {
-                this.bitArrayMasked.push(this.bitArray[count]);
-            }
-        }else if(this.instruction.endianess == enumEndianess.Motorola){
-            for (var count = this.instruction.startbit - this.instruction.bitlen; count != this.instruction.startbit ; count++) {
-                this.bitArrayMasked.push(this.bitArray[count]);
-            }
-        }
-        
-        //Translate the bitArray into a string
-        this.binaryString = funary.arrayToString(this.bitArrayMasked);
-        //Generate the bitArray of the CA2 value
-        funary.stringToArray(this.binaryString).forEach(element => {
-            this.bitArrayMaskedNot.push(funary.not(element))
-        })
-        this.bitArrayMaskedNot = funary.big.NADDER(this.bitArrayMaskedNot, funary.unshiftzeros([1], this.bitArrayMaskedNot.length - 1));
-        //Translate the bitArray of negative value into a string
-        this.binaryStringNot = funary.arrayToString(this.bitArrayMaskedNot);
+        return bitArray;
     }
 
-    getNumericValue() {
-        if (this.instruction.issigned === true) {
-            if (this.binaryString.charAt(0) === "0") {
-                return parseInt(this.binaryString, 2) * this.instruction.resolution + this.instruction.offset;
-            } else if (this.binaryString.charAt(0) === "1") {
-                return - parseInt(this.binaryStringNot, 2) * this.instruction.resolution + this.instruction.offset;
+    retrieveBitString(bitArray: Array<string>, endianess: enumEndianess, bitlen: number, startbit: number): string {
+        let bitArrayMasked = new Array();
+        if (endianess == enumEndianess.Intel) {
+            for (var count = bitlen + startbit - 1; count != startbit - 1; count--) {
+                bitArrayMasked.push(bitArray[count]);
+            }
+        } else if (endianess == enumEndianess.Motorola) {
+            for (var count = startbit - bitlen; count != startbit; count++) {
+                bitArrayMasked.push(bitArray[count]);
+            }
+        }
+        return funary.arrayToString(bitArrayMasked);
+    }
+
+    retrieveNumericValue(binaryString: string, issigned: boolean, resolution: number, offset: number): number {
+        if (issigned === true) {
+            if (binaryString.charAt(0) === "0") {
+                return parseInt(binaryString, 2) * resolution + offset;
+            } else if (binaryString.charAt(0) === "1") {
+                return - parseInt(this.retrieveStringNot(binaryString), 2) * resolution + offset;
             }
         } else {
-            return parseInt(this.binaryString, 2) * this.instruction.resolution + this.instruction.offset;
+            return parseInt(binaryString, 2) * resolution + offset;
         }
+    }
 
+    retrieveStringNot(binaryString: string): string {
+        let bitArrayMaskedNot = new Array();
+        funary.stringToArray(binaryString).forEach(element => {
+            bitArrayMaskedNot.push(funary.not(element))
+        })
+        bitArrayMaskedNot = funary.big.NADDER(bitArrayMaskedNot, funary.unshiftzeros([1], bitArrayMaskedNot.length - 1));
+        return funary.arrayToString(bitArrayMaskedNot);
     }
 }
-
-
-//INTEL TEST
-// const inputBufferIntel: Buffer = Buffer.from([0xa1, 0xb2, 0xc3, 0xd4, 0xe5, 0xf6, 0x78, 0x9a]);
-// const instructionIntel: IInstruction = {
-//     "issigned": true,
-//     "startbit": 17,
-//     "bitlen": 47,
-//     "endianess": enumEndianess.Intel,
-//     "resolution": 1,
-//     "offset": 0
-// }
-// var myObjIntel = new CanParse(inputBufferIntel, instructionIntel);
-// console.log("INTEL:", JSON.stringify(myObjIntel.bitArrayMasked));
-
-// //MOTOROLA TEST
-// const inputBufferMotorola: Buffer = Buffer.from([0x9a, 0x78, 0xf6, 0xe5, 0xd4, 0xc3, 0xb2, 0xa1]);
-// const instructionMotorola: IInstruction = {
-//     "issigned": true,
-//     "startbit": 47,
-//     "bitlen": 47,
-//     "endianess": enumEndianess.Motorola,
-//     "resolution": 1,
-//     "offset": 0
-// }
-// var myObjMotorola = new CanParse(inputBufferMotorola, instructionMotorola);
-// console.log("MOTOROLA:", JSON.stringify(myObjMotorola.bitArrayMasked));
