@@ -2,12 +2,12 @@ import * as funary from 'funary';
 import * as _ from "lodash";
 
 export class BitArrayConverter{
-    static convert(source: Array<number>, isIntel: boolean): Array<string> {
+    public convert(source: Array<number>, isIntel: boolean): Array<string> {
         return  _.reduce(source,
              (resultSet: Array<string>, decUnsigned: number) => _.concat(resultSet , this.toByte(decUnsigned, isIntel)), []);
     }
 
-    static toByte(decUnsigned: number, isIntel: boolean): Array<string>{
+    private toByte(decUnsigned: number, isIntel: boolean): Array<string>{
         let byte: Array<string>;
         let row;
 

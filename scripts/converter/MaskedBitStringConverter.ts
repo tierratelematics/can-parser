@@ -3,14 +3,21 @@ import * as _ from "lodash";
 import * as funary from 'funary';
 
 export class MaskedBitStringConverter {
-    static convert(source: Array<number>, isIntel: boolean, bitlen: number, startbit: number): string {
-        let start: number = (isIntel) ? startbit : startbit-bitlen;
-        let end: number = start + bitlen;
+    bitArrayConverter : BitArrayConverter;
 
-        let bitArrayMasked: Array<string> = _.slice(BitArrayConverter.convert(source, isIntel), start, end);
+    constructor(bitArrayConverter : BitArrayConverter = new BitArrayConverter()){
+        this.bitArrayConverter = bitArrayConverter;
+    }
+
+    public convert(source: Array<number>, isIntel: boolean, startbit: number, bitlen: number): string {
+        let sourceBitArrayConverter: Array<string> =  this.bitArrayConverter.convert(source, isIntel);
+        let start: number = (isIntel) ? startbit : _.size(sourceBitArrayConverter) - startbit - bitlen;
+        let end: number = (isIntel) ? start + bitlen : _.size(sourceBitArrayConverter) - startbit;
+        
+        let bitArrayMasked: Array<string> = _.slice(sourceBitArrayConverter, start, end);
         if(!isIntel)
             bitArrayMasked = _.reverse(bitArrayMasked);
-
+            
         return funary.arrayToString(bitArrayMasked);
     }
 

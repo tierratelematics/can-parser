@@ -1,11 +1,8 @@
 const WORD_16_BIT = 16;
+import * as _ from "lodash";
 
 export class DecConverter {
-    static from(buffer: Buffer): Array<number> {
-        let resultSet: Array<number> = [];
-        buffer.forEach(function (element) {
-            resultSet.push(parseInt(element.toString(WORD_16_BIT), WORD_16_BIT))
-        });
-        return resultSet;
+    public from(buffer: Buffer): Array<number> {
+        return _.map(buffer, (element) => parseInt(element.toString(WORD_16_BIT), WORD_16_BIT));
     }
 }
