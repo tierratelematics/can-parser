@@ -1,28 +1,29 @@
 {
-  "name": "canparse",
-  "version": "0.0.1",
+  "name": "canparser",
+  "version": "1.0.0",
   "description": "",
-  "main": "canparse.js",
+  "main": "dist",
+  "typings": "dist",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://mschenatti@bitbucket.tierraservice.com/scm/tfm/canparse.git"
+    "url": "https://mschenatti@bitbucket.tierraservice.com/scm/tfm/canparser.git"
   },
-  "author": "mschenatti",
+  "author": "",
   "license": "ISC",
+  "dependencies": {
+    "funary": "^1.0.0",
+    "inversify": "^3.3.0",
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
-    "@types/node-fetch": "^1.6.7",
-    "binary": "^0.3.0",
-    "funary": "^1.0.0",
-    "install": "^0.10.1",
-    "mocha": "^3.4.2",
-    "node-fetch": "^1.7.1",
-    "npm": "^5.5.1",
-    "socketcan": "^2.2.0",
     "@types/node": "^6.0.78",
-    "reflect-metadata": "^0.1.10"
+    "@types/lodash": "^4.14.80",
+    "mocha": "^3.4.2",
+    "requireg": "^0.1.7",
+    "socketcan": "^2.2.0"
   }
 }

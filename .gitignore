@@ -1,1 +1,8 @@
-node_modules/**/*
+npm-debug.log.*
+dist
+*.log
+.idea
+node_modules
+docker/build
+package-deps.json
+package-lock\.json
