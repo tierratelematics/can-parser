@@ -26,8 +26,10 @@
     "expect.js": "^0.3.1",
     "typemoq": "^2.0.1",
     "mocha": "^3.4.2",
+    "microsecond": "^0.0.1",
     "reflect-metadata": "^0.1.10",
     "requireg": "^0.1.7",
+    "rxjs": "^5.5.2",
     "socketcan": "^2.2.0"
   }
 }

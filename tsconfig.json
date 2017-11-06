@@ -7,10 +7,11 @@
     "sourceMap": true,
     "module": "commonjs",
     "types": ["mocha", "node", "reflect-metadata"],
-    "outDir": "dist",
-    "declaration": true
+    "outDir": "dist"
   },
   "exclude": [
     "node_modules"
   ]
 }
+
+
