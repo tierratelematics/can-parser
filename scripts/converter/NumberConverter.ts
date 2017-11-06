@@ -5,7 +5,7 @@ export class NumberConverter {
     public convert(binaryString: string, issigned: boolean, resolution: number, offset: number): number {
         if (issigned && _.startsWith(binaryString, "1"))
             return - parseInt(this.retrieveStringNot(binaryString), 2) * resolution + offset;
-        
+
         return parseInt(binaryString, 2) * resolution + offset;
     }
 

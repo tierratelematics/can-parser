@@ -4,10 +4,10 @@ export enum enumEndianess {
 }
 
 export type IInstruction = {
-    issigned:     boolean,
-    startbit:     number,
-    bitlen:       number,
-    endianess:    enumEndianess,
-    resolution:   number,
-    offset:       number
+    issigned: boolean,
+    startbit: number,
+    bitlen: number,
+    endianess: enumEndianess,
+    resolution: number,
+    offset: number
 }

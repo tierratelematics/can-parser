@@ -7,20 +7,20 @@ describe("Given a BitArrayConverter and a source of numbers", () => {
 
     beforeEach(() => {
         subject = new BitArrayConverter();
-        source = [161];
+        source = [161, 178];
     });
 
     context("when the instructions says you're dealing with an Intel endianess,", () => {
 
         it("it should convert each number into an unsigned byte", () => {
-            expect(subject.convert(source, true)).to.be.eql(["1","0","0","0","0", "1", "0", "1"])
+            expect(subject.convert(source, true)).to.be.eql(["1", "0", "1", "1", "0", "0", "1", "0", "1", "0", "1", "0", "0", "0", "0", "1"])
         })
     })
 
     context("when the instructions says you're dealing with a Motorola endianess,", () => {
-        
+
         it("it should convert each number into an unsigned byte", () => {
-            expect(subject.convert(source, false)).to.be.eql(["1","0","1","0","0", "0", "0", "1"])
+            expect(subject.convert(source, false)).to.be.eql(["1", "0", "1", "0", "0", "0", "0", "1", "1", "0", "1", "1", "0", "0", "1", "0"])
         })
     })
 })

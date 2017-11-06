@@ -43,7 +43,7 @@
 //     try{
 //         console.log(canParser.retrieveNumberFromBuffer(msg.data,InstructionCh1)); 
 //     }catch(e){
-        
+
 //     }
 // });
 // channel1.start();
