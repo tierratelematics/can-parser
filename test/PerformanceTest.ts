@@ -24,7 +24,7 @@ let Instruction: IInstruction = {
 
 function getBufferSliceFromFile() {
     let myBuffer = fs.readFileSync(sourcePath)
-    return Observable.interval(1).map(number => {
+    return Observable.interval(1000).map(number => {
         counter++;
         return { timestamp: microsecond.start(), buffer: myBuffer.slice(counter * 8, counter * 8 + 8) }
     })
@@ -33,7 +33,7 @@ function getBufferSliceFromFile() {
 
 SourceFileWriter.writeFile().then((val) => {
     getBufferSliceFromFile().subscribe(data => {
-        fs.appendFile("./destination",
-            canParser.retrieveNumberFromBuffer(data.buffer, Instruction) +  " in " + microsecond.diff(data.timestamp)  + " us\n");
+        fs.appendFile("./destination", microsecond.diff(data.timestamp) + "\n");
+        // canParser.retrieveNumberFromBuffer(data.buffer, Instruction) +  " in " + microsecond.diff(data.timestamp)  + " us\n");
     })
 })
