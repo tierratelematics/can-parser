@@ -90,7 +90,7 @@ console.log(numericValue);
 ```
 typescript
 ```typescript
-import { CanParser, enumEndianess, IInstruction } from "canparser";
+import { CanParser, enumEndianess, IInstruction } from "can-parser";
 
 let canParser = new (CanParser);
 
