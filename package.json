@@ -1,6 +1,6 @@
 {
-  "name": "canparser",
-  "version": "0.1.0",
+  "name": "can-parser",
+  "version": "0.1.1",
   "description": "",
   "main": "dist",
   "typings": "dist",
@@ -10,13 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://mschenatti@bitbucket.tierraservice.com/scm/tfm/canparser.git"
+    "url": "https://github.com/tierratelematics/can-parser"
   },
-  "author": "",
+  "author": "mschenatti",
   "license": "ISC",
   "dependencies": {
     "funary": "^1.0.0",
-    "inversify": "^3.3.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -30,7 +29,6 @@
     "microsecond": "^0.0.1",
     "reflect-metadata": "^0.1.10",
     "requireg": "^0.1.7",
-    "rxjs": "^5.5.2",
-    "socketcan": "^2.2.0"
+    "rxjs": "^5.5.2"
   }
 }
